@@ -18,12 +18,12 @@ class BotEvents(commands.Cog):
     async def on_member_join(self, member):
         try:
             await member.send(f"Bem-vindo ao servidor, {member.mention}...",
-                              f"\nSou o kurumin, seu assistente virtual dentro da Porãygua, pode vir à mim se precisar de algo.",
-                              f"\nVocê acaba de entrar para nosso grupo de desenvolvimento coletivo, onde podemos entrar ou criar projetos para aprender novas tecnologias",
-                              f"\nAqui o unico requisito é ser interessado por aprender e ter o compromisso de agir.",
-                              f"\nEntre em projetos de outros devs ou crie seu próprio projeto e chame outros para participarem que tenham o mesmo intusiamos que você",
-                              f"\n para me chamar use o comando !kajuda, voce receberá por aqui a lista de comandos que poderá receber.",
-                              f"\nNovamente, bem vindo ao Porãygua dev goup!!!!🥳🥳") 
+                              f"\nSou o Curumin, seu assistente virtual dentro da Porãygua, pode vir à mim se precisar de algo."
+                              f"\nVocê acaba de entrar para nosso grupo de desenvolvimento coletivo, onde podemos entrar ou criar projetos para aprender novas tecnologias"
+                              f"\nAqui o unico requisito é ser interessado por aprender e ter o compromisso de agir."
+                              f"\nEntre em projetos de outros devs ou crie seu próprio projeto e chame outros para participarem que tenham o mesmo intusiamos que você"
+                              f"\n para me chamar use o comando !kajuda, voce receberá por aqui a lista de comandos que poderá receber."
+                              f"\nNovamente, **bem vindo ao Porãygua dev goup!!!!🥳🥳**") 
         except discord.Forbidden:
             print(f"Não foi possível enviar mensagem privada para {member.name}")
 
@@ -34,6 +34,10 @@ class BotEvents(commands.Cog):
         except discord.Forbidden:
             print(f"Não foi possível enviar mensagem privada para {member.name}")
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.send(f"Comando não encontrado. Por favor, verifique se digitou corretamente, {ctx.author.mention}.")
 
       
 async def setup(bot):
