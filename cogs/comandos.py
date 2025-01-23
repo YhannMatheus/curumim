@@ -49,7 +49,7 @@ class BotCommands(commands.Cog):
         await ctx.author.send("Égua mano, ainda não recebi o git da administração, assim que eu tiver eu avido no canal!!")
 
     @commands.command()
-    async def listar_categorias(self, ctx: commands.Context):
+    async def projeto(self, ctx: commands.Context):
         """
         Lista os nomes das categorias do servidor que não começam com "--"
         """
@@ -65,7 +65,7 @@ class BotCommands(commands.Cog):
         Cria um ticket de reunião que dura no máximo 24 horas para falar com um administrador.
         Apenas administradores e o usuário que solicitou podem ler o ticket.
         """
-        ctx.message.delete()
+        await ctx.message.delete()
         guild = ctx.guild
         author = ctx.author
 
@@ -101,7 +101,7 @@ class BotCommands(commands.Cog):
         Dá ao membro direitos totais sobre a categoria e posta um embed no canal de avisos do servidor.
         Somente o autor, com a autorização, poderá entrar nos canais ou ceder a role do projeto a outros usuários.
         """
-        ctx.message.delete()
+        await ctx.message.delete()
         guild = ctx.guild
         category = await guild.create_category(nome)
         text_channel = await guild.create_text_channel(f'{nome}-forum', category=category)
@@ -128,11 +128,10 @@ class BotCommands(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def excluir_projeto(self, ctx: commands.Context, nome: str):
+    async def del_projeto(self, ctx: commands.Context, nome: str):
         """
         Exclui a categoria, todos os canais associados a um projeto e a role correspondente.
         """
-        ctx.message.delete()
         guild = ctx.guild
         category = discord.utils.get(guild.categories, name=nome)
         role = discord.utils.get(guild.roles, name=nome)
@@ -151,12 +150,12 @@ class BotCommands(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def apagar_reuniao(self, ctx: commands.Context):
+    async def encerrar(self, ctx: commands.Context):
         """
         Apaga o ticket de reunião no qual o comando foi escrito.
         Apenas administradores podem usar este comando.
         """
-        ctx.message.delete()
+        await ctx.message.delete()
         ticket_channel = ctx.channel
 
         if ticket_channel.category and ticket_channel.category.name == "Tickets":
