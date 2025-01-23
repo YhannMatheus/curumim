@@ -39,6 +39,5 @@ class BotEvents(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             await ctx.send(f"Comando não encontrado. Por favor, verifique se digitou corretamente, {ctx.author.mention}.")
 
-      
 async def setup(bot):
     await bot.add_cog(BotEvents(bot))

@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from discord import app_commands
 from discord.ext import commands
 
-  # Registra o comando no bot
 class BotCommands(commands.Cog):
     def __init__(self, bot):
         load_dotenv()
