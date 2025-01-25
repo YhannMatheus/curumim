@@ -6,9 +6,10 @@ from discord import app_commands
 from discord.ext import commands
 
 class BotCommands(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         load_dotenv()
         self.bot = bot
+        self.aviso_channel_id = bot.aviso_channel_id
         super().__init__()
 
     @commands.command()
@@ -70,9 +71,9 @@ class BotCommands(commands.Cog):
         author = ctx.author
 
         # Create a category for tickets if it doesn't exist
-        category = discord.utils.get(guild.categories, name="Tickets")
+        category = discord.utils.get(guild.categories, name="--Tickets")
         if not category:
-            category = await guild.create_category("Tickets")
+            category = await guild.create_category("--Tickets")
 
         # Create a text channel for the ticket
         ticket_channel = await guild.create_text_channel(f"ticket-{author.name}", category=category)
@@ -95,7 +96,7 @@ class BotCommands(commands.Cog):
     #!  ADM FUNÇÕES -------
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def novo_projeto(self, ctx: commands.Context, nome: str, member: discord.Member, *descricao: str):
+    async def abrir(self, ctx: commands.Context, nome: str, member: discord.Member, *descricao: str):
         """
         Cria uma categoria com o nome do projeto + 1 canal de texto forum + 1 canal de voz reunião.
         Dá ao membro direitos totais sobre a categoria e posta um embed no canal de avisos do servidor.
@@ -103,28 +104,45 @@ class BotCommands(commands.Cog):
         """
         await ctx.message.delete()
         guild = ctx.guild
+
+        # Cria a categoria e os canais
         category = await guild.create_category(nome)
         text_channel = await guild.create_text_channel(f'{nome}-forum', category=category)
         voice_channel = await guild.create_voice_channel(f'{nome}-reuniao', category=category)
 
-        await ctx.message.delete()
-
-        # Create a role for the project and assign it to the member
+        # Cria uma role para o projeto e atribui ao membro
         role = await guild.create_role(name=nome)
         await member.add_roles(role)
 
-        # Set permissions for the category and channels
+        # Define permissões para a categoria e canais
         await category.set_permissions(member, manage_channels=True, manage_permissions=True, manage_messages=True, connect=True, speak=True)
         await category.set_permissions(guild.default_role, read_messages=False)
         await text_channel.set_permissions(role, read_messages=True, send_messages=True)
         await voice_channel.set_permissions(role, connect=True, speak=True)
+
+        # Limita a descrição a 2048 caracteres (limite do Discord para a descrição de um embed)
+        descricao_str = ' '.join(descricao)
+        if len(descricao_str) > 2048:
+            descricao_str = descricao_str[:2045] + '...'
+
+        # Cria o embed
+        embed = discord.Embed(
+            title=f"Novo Projeto - {nome.title()}",
+            description=f"O projeto **{nome}** foi criado e atribuído a {member.mention}.\n\nDescrição: {descricao_str}",
+            color=discord.Color.green()
+        )
+
+        # Envia o embed para o canal de avisos
+        aviso_channel = self.bot.get_channel(self.bot.aviso_channel_id)
+        if aviso_channel:
+            if aviso_channel.permissions_for(aviso_channel.guild.me).send_messages:
+                await aviso_channel.send(embed=embed)
+                print(f"Embed enviado para o canal de avisos: {aviso_channel.name}")
+            else:
+                print("Sem permissão para enviar mensagens no canal de avisos.")
+        else:
+            print("Canal de avisos não encontrado.")
         
-        embed = discord.Embed(title=f"Novo Projeto - {nome.title()}",
-                              description=f"O projeto **{nome}** foi criado e atribuído a {member.mention}.\n\nDescrição: {' '.join(descricao)}",
-                              color=discord.Color.green())
-        embed.set_thumbnail(member.avatar.url)
-        
-        await guild.system_channel.send(embed=embed)
 
     @commands.command()
     @commands.has_permissions(administrator=True)
