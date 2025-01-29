@@ -14,17 +14,9 @@ class BotEvents(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"Bot online como {self.bot.user}")
-        channel = self.bot.get_channel(self.aviso_channel_id)
-        if channel:
-            if channel.permissions_for(channel.guild.me).send_messages:
-                await channel.send("Bot está online!")
-            else:
-                print("Sem permissão para enviar mensagens no canal de avisos.")
-        else:
-            print("Canal de avisos não encontrado.")
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join(self, member:discord.Member):
         try:
             await member.send(f"Bem-vindo ao servidor, {member.mention}...",
                               f"\nSou o Curumin, seu assistente virtual dentro da Porãygua, pode vir à mim se precisar de algo."
@@ -62,14 +54,6 @@ class BotEvents(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             await ctx.send(f"Comando não encontrado. Por favor, verifique se digitou corretamente, {ctx.author.mention}.")
-
-    @commands.Cog.listener()
-    async def on_disconnect(self):
-        channel = self.bot.get_channel(self.aviso_channel_id)
-        if channel:
-            await channel.send("opa, parece que estamos em manutenção, me de uns instantes!!")
-        else:
-            print("Canal de avisos não encontrado.")
 
 async def setup(bot):
     await bot.add_cog(BotEvents(bot))

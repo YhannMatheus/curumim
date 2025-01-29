@@ -19,9 +19,9 @@ class BotCommands(commands.Cog):
         """
         await ctx.message.delete()
         await ctx.author.send('Aparentemente você solicitou ajuda, aqui estão algumas funções que você pode realizar....'
-                              '\n\n- !kprojeto : lista os projetos em aberto dentro do nosso servidor'
+                              '\n\n- !kprojetos : lista os projetos em aberto dentro do nosso servidor'
                               '\n- !kajuda : se você já está lendo isso, já sabe pra que serve'
-                              '\n- !kmkprojeto : cria uma rquisição de projetos para os adms avaliarem seu projeto'
+                              '\n- !pedir : cria uma rquisição de projetos para os adms avaliarem seu projeto'
                               '\n      |->parametros: <nome do projeto> <descrição>'
                               '\n- !kgit : manda o link do git publico da porãygua para você'
                               '\n- !kwtz : envia para você um link para a comunidade do wtzp'
@@ -91,6 +91,18 @@ class BotCommands(commands.Cog):
         # Delete the ticket channel after 24 hours
         await discord.utils.sleep_until(datetime.datetime.utcnow() + datetime.timedelta(hours=24))
         await ticket_channel.delete()
+
+    @commands.command()
+    async def pedir(self,ctx:commands.Context,nome:str, *descricao:str):
+        """
+        função para solicitar a abertura de um novo projeto
+        """
+        await ctx.message.delete()
+        autor = ctx.author.name
+        chanel =  ctx.guild.get_channel(id = 1333840477971021884)
+        embed = discord.Embed(title=f"requisição de projeto: {nome}",description=f"{descricao}\nfeito por{autor}")
+        
+        await chanel.send(embed=embed)
 
 
     #!  ADM FUNÇÕES -------
@@ -176,7 +188,7 @@ class BotCommands(commands.Cog):
         await ctx.message.delete()
         ticket_channel = ctx.channel
 
-        if ticket_channel.category and ticket_channel.category.name == "Tickets":
+        if ticket_channel.category and ticket_channel.category.name == "--Tickets":
             await ticket_channel.delete()
             await ctx.send(f"O ticket **{ticket_channel.name}** foi apagado com sucesso.")
         else:
