@@ -52,7 +52,7 @@ class BotCommands(commands.Cog):
     @commands.command()
     async def projeto(self, ctx: commands.Context):
         """
-        Lista os nomes das categorias do servidor que não começam com "--"
+        Lista os nomes dos projetos ainda abertos dentro da Porãygua
         """
         categorias = [category.name for category in ctx.guild.categories if not category.name.startswith("--")]
         if categorias:
@@ -128,6 +128,7 @@ class BotCommands(commands.Cog):
 
         # Define permissões para a categoria e canais
         await category.set_permissions(member, manage_channels=True, manage_permissions=True, manage_messages=True, connect=True, speak=True)
+        await category.set_permissions(role, read_messages=True, send_messages=True, connect=True, speak=True)
         await category.set_permissions(guild.default_role, read_messages=False)
         await text_channel.set_permissions(role, read_messages=True, send_messages=True)
         await voice_channel.set_permissions(role, connect=True, speak=True)
