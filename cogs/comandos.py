@@ -155,7 +155,29 @@ class BotCommands(commands.Cog):
                 print("Sem permissão para enviar mensagens no canal de avisos.")
         else:
             print("Canal de avisos não encontrado.")
+    
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def aviso(self,ctx:commands.Context, titulo,*texto):
         
+        descricao_str = ' '.join(texto)
+        if len(descricao_str) > 2048:
+            descricao_str = descricao_str[:2045] + '...'
+
+        embed = discord.Embed(title=f"Aviso - {titulo}", description=texto)
+        
+        aviso_channel = self.bot.get_channel(self.bot.aviso_channel_id)
+        
+        if aviso_channel:
+            if aviso_channel.permissions_for(aviso_channel.guild.me).send_messages:
+                await aviso_channel.send(embed=embed)
+                print(f"Embed enviado para o canal de avisos: {aviso_channel.name}")
+            else:
+                print("Sem permissão para enviar mensagens no canal de avisos.")
+        else:
+            print("Canal de avisos não encontrado.")
+        
+
 
     @commands.command()
     @commands.has_permissions(administrator=True)
