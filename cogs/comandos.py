@@ -164,7 +164,9 @@ class BotCommands(commands.Cog):
         if len(descricao_str) > 2048:
             descricao_str = descricao_str[:2045] + '...'
 
-        embed = discord.Embed(title=f"Aviso - {titulo}", description=texto)
+        embed = discord.Embed(title=f"Aviso - {titulo}",
+                              description=texto,
+                              color=discord.Color.green())
         
         aviso_channel = self.bot.get_channel(self.bot.aviso_channel_id)
         
