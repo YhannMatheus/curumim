@@ -1,1 +1,5 @@
+# .gitignore
 .env
+./venv
+./vccode
+./cogs/__pycache__
