@@ -158,14 +158,14 @@ class BotCommands(commands.Cog):
     
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def aviso(self,ctx:commands.Context, titulo,*texto):
+    async def aviso(self,ctx:commands.Context, titulo:str,*texto:str):
         
         descricao_str = ' '.join(texto)
         if len(descricao_str) > 2048:
             descricao_str = descricao_str[:2045] + '...'
 
         embed = discord.Embed(title=f"Aviso - {titulo}",
-                              description=texto,
+                              description=f"{descricao_str}",
                               color=discord.Color.green())
         
         aviso_channel = self.bot.get_channel(self.bot.aviso_channel_id)
@@ -179,8 +179,6 @@ class BotCommands(commands.Cog):
         else:
             print("Canal de avisos não encontrado.")
         
-
-
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def del_projeto(self, ctx: commands.Context, nome: str):
